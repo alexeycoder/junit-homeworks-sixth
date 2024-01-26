@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListByAverageComparator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junit-homeworks-sixth</a> &gt; <a href="index.source.html" class="el_package">edu.alexey.junit.homeworks.sixth</a> &gt; <span class="el_source">ListByAverageComparator.java</span></div><h1>ListByAverageComparator.java</h1><pre class="source lang-java linenums">package edu.alexey.junit.homeworks.sixth;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Компаратор списков чисел по их среднему арифметическому. &lt;br&gt;
+ * Не допускается сравнивать null, пустые списки и списки, содержащие
+ * null-элементы.
+ */
+<span class="fc" id="L12">public class ListByAverageComparator implements Comparator&lt;List&lt;? extends Number&gt;&gt; {</span>
+
+	static final String NULL_LIST_MSG = &quot;Значения null не допускаются&quot;;
+	static final String EMPTY_LIST_MSG = &quot;Пустые списки не допускаются&quot;;
+	static final String NULL_ELEM_MSG = &quot;Списки с null элементами не допускаются&quot;;
+
+	/**
+	 * Метод сравнения компаратора (см.
+	 * {@link java.util.Comparator#compare(Object, Object)}) для пары числовых
+	 * списков по их среднему арифметическому. списков чисел по их среднему
+	 * арифметическому. &lt;br&gt;
+	 * Не допускается сравнивать null, пустые списки и списки, содержащие
+	 * null-элементы.
+	 *
+	 * @throws NullPointerException     если любой из аргументов {@code null}.
+	 * @throws IllegalArgumentException если любой аз аргументов является пустым
+	 *                                  списком или содержит null-элементы.
+	 */
+	@Override
+	public int compare(List&lt;? extends Number&gt; list1, List&lt;? extends Number&gt; list2) {
+
+<span class="fc" id="L33">		Objects.requireNonNull(list1, NULL_LIST_MSG + &quot;: list1&quot;);</span>
+<span class="fc" id="L34">		Objects.requireNonNull(list2, NULL_LIST_MSG + &quot;: list2&quot;);</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (list1.isEmpty()) {</span>
+<span class="fc" id="L36">			throw new IllegalArgumentException(EMPTY_LIST_MSG + &quot;: list1&quot;);</span>
+		}
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		if (list2.isEmpty()) {</span>
+<span class="fc" id="L39">			throw new IllegalArgumentException(EMPTY_LIST_MSG + &quot;: list2&quot;);</span>
+		}
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (list1.stream().anyMatch(Objects::isNull)) {</span>
+<span class="fc" id="L42">			throw new IllegalArgumentException(NULL_ELEM_MSG + &quot;: list1&quot;);</span>
+		}
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		if (list2.stream().anyMatch(Objects::isNull)) {</span>
+<span class="fc" id="L45">			throw new IllegalArgumentException(NULL_ELEM_MSG + &quot;: list2&quot;);</span>
+		}
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		if (list1 == list2) {</span>
+<span class="fc" id="L49">			return 0;</span>
+		}
+
+<span class="fc" id="L52">		double avg1 = ListUtils.calcAverage(list1).getAsDouble();</span>
+<span class="fc" id="L53">		double avg2 = ListUtils.calcAverage(list2).getAsDouble();</span>
+
+<span class="fc" id="L55">		return Double.compare(avg1, avg2);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

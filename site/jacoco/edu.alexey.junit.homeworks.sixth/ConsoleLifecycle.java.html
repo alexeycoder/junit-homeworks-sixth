@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConsoleLifecycle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junit-homeworks-sixth</a> &gt; <a href="index.source.html" class="el_package">edu.alexey.junit.homeworks.sixth</a> &gt; <span class="el_source">ConsoleLifecycle.java</span></div><h1>ConsoleLifecycle.java</h1><pre class="source lang-java linenums">package edu.alexey.junit.homeworks.sixth;
+
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import edu.alexey.junit.homeworks.sixth.aux.UncloseableInputStream;
+
+/**
+ * Консольное приложение для ввода двух списков чисел и их сравнения по среднему
+ * арифметическому.
+ */
+public class ConsoleLifecycle implements Runnable {
+
+	static final String RESULT_EQUALS = &quot;Средние значения равны&quot;;
+	static final String RESULT_FIRST_GREATER = &quot;Первый список имеет большее среднее значение&quot;;
+	static final String RESULT_SECOND_GREATER = &quot;Второй список имеет большее среднее значение&quot;;
+
+<span class="fc" id="L27">	static final Locale NUMBERS_LOCALE = Locale.US;</span>
+	static final String INPUT_BEGINNING_SYMBOL = &quot;❭&quot;;
+	static final String PROMPT_NUMBERS = &quot;Введите список числел,&quot;
+			+ &quot; используя пробельный символ в качестве разделителя чисел,&quot;
+			+ &quot; и точку в качестве десятичного разделителя&quot;
+			+ &quot; (или пустой ввод чтобы завершить):&quot;;
+	static final String WRONG_INPUT = &quot;Некорректный ввод. Пожалуйста попробуйте ещё раз:&quot;;
+	static final String PREVIEW_TEMPLATE = &quot;Введён список: %s\n&quot;
+			+ &quot;его среднее арифметическое: %.3f&quot;;
+	static final String EXIT_SUCCESSFULLY = &quot;Приложение успешно завершено.&quot;;
+
+	private final Scanner inScanner;
+	private final PrintStream out;
+	private final PrintStream err;
+
+	public ConsoleLifecycle() {
+<span class="fc" id="L43">		this(null, null, null);</span>
+<span class="fc" id="L44">	}</span>
+
+	/**
+	 * Консольное приложение для ввода двух списков чисел и их сравнения по среднему
+	 * арифметическому.
+	 *
+	 * @param inScanner Стандартный поток ввода для приложения, обёрнутый в Scanner.
+	 * @param out       Стандартный поток вывода для приложения.
+	 * @param err       Стандартный поток ошибок для приложения.
+	 */
+<span class="fc" id="L54">	public ConsoleLifecycle(Scanner inScanner, PrintStream out, PrintStream err) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		this.inScanner = inScanner == null</span>
+<span class="fc" id="L56">				? new Scanner(</span>
+<span class="fc" id="L57">						UncloseableInputStream.wrap(System.in),</span>
+						StandardCharsets.UTF_8)
+<span class="fc" id="L59">				: inScanner;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		this.out = out == null ? System.out : out;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		this.err = err == null ? System.err : err;</span>
+<span class="fc" id="L62">	}</span>
+
+	@Override
+	public void run() {
+
+		do {
+<span class="fc" id="L68">			out.println(&quot;\nСписок 1&quot;);</span>
+<span class="fc" id="L69">			String list1Str = askNumbersList();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (list1Str == null) {</span>
+<span class="fc" id="L71">				break;</span>
+			}
+<span class="fc" id="L73">			List&lt;Number&gt; list1 = parseNumbersList(list1Str);</span>
+<span class="fc" id="L74">			previewNumbersList(list1);</span>
+
+<span class="fc" id="L76">			out.println(&quot;\nСписок 2&quot;);</span>
+<span class="fc" id="L77">			String list2Str = askNumbersList();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">			if (list2Str == null) {</span>
+<span class="fc" id="L79">				break;</span>
+			}
+<span class="fc" id="L81">			List&lt;Number&gt; list2 = parseNumbersList(list2Str);</span>
+<span class="fc" id="L82">			previewNumbersList(list2);</span>
+
+<span class="fc" id="L84">			String result = compareAndGetResult(list1, list2);</span>
+<span class="fc" id="L85">			out.println(&quot;\nОтвет:&quot;);</span>
+<span class="fc" id="L86">			out.println(result);</span>
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		} while (askYesNo(&quot;\nЖелаете повторить (Y/n)? &quot;, true));</span>
+
+<span class="fc" id="L90">		out.println(EXIT_SUCCESSFULLY);</span>
+<span class="fc" id="L91">	}</span>
+
+	String compareAndGetResult(List&lt;Number&gt; list1, List&lt;Number&gt; list2) {
+<span class="fc" id="L94">		int res = new ListByAverageComparator().compare(list1, list2);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		if (res &lt; 0) {</span>
+<span class="fc" id="L96">			return RESULT_SECOND_GREATER;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		} else if (res &gt; 0) {</span>
+<span class="fc" id="L98">			return RESULT_FIRST_GREATER;</span>
+		} else {
+<span class="fc" id="L100">			return RESULT_EQUALS;</span>
+		}
+	}
+
+	void previewNumbersList(List&lt;Number&gt; list) {
+<span class="fc" id="L105">		double avg = ListUtils.calcAverage(list).getAsDouble();</span>
+<span class="fc" id="L106">		out.printf(NUMBERS_LOCALE, PREVIEW_TEMPLATE, list, avg);</span>
+<span class="fc" id="L107">		out.println();</span>
+<span class="fc" id="L108">	}</span>
+
+	String askNumbersList() {
+<span class="fc" id="L111">		out.println();</span>
+<span class="fc" id="L112">		out.print(PROMPT_NUMBERS);</span>
+
+<span class="fc" id="L114">		boolean wrong = false;</span>
+		while (true) {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">			if (wrong) {</span>
+<span class="fc" id="L117">				wrong = false;</span>
+<span class="fc" id="L118">				err.println(WRONG_INPUT);</span>
+			}
+<span class="fc" id="L120">			out.println();</span>
+<span class="fc" id="L121">			out.print(INPUT_BEGINNING_SYMBOL);</span>
+<span class="fc" id="L122">			String inp = inScanner.nextLine();</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">			if (inp.isEmpty()) {</span>
+<span class="fc" id="L124">				return null;</span>
+			}
+<span class="fc bfc" id="L126" title="All 2 branches covered.">			if (representsNumbers(inp)) {</span>
+<span class="fc" id="L127">				return inp;</span>
+			}
+<span class="fc" id="L129">			wrong = true;</span>
+<span class="fc" id="L130">		}</span>
+	}
+
+	boolean askYesNo(String prompt, boolean isYesDefault) {
+<span class="fc" id="L134">		out.print(prompt);</span>
+<span class="fc" id="L135">		var answer = inScanner.nextLine();</span>
+
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (answer.isBlank()) {</span>
+<span class="fc" id="L138">			return isYesDefault;</span>
+		}
+
+<span class="fc bfc" id="L141" title="All 4 branches covered.">		if (answer.startsWith(&quot;y&quot;) || answer.startsWith(&quot;д&quot;)</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">				|| answer.startsWith(&quot;l&quot;)) {</span>
+<span class="fc" id="L143">			return true;</span>
+<span class="fc bfc" id="L144" title="All 4 branches covered.">		} else if (answer.startsWith(&quot;n&quot;) || answer.startsWith(&quot;н&quot;)</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">				|| answer.startsWith(&quot;т&quot;)) {</span>
+<span class="fc" id="L146">			return false;</span>
+		} else {
+<span class="fc" id="L148">			return isYesDefault;</span>
+		}
+	}
+
+	/**
+	 * Проверяет, является строка представлением списка вещественных чисел.
+	 *
+	 * @param str Проверяемая строка.
+	 * @return true, если строка содержит только вещественные числа, разделенные
+	 *         пробельными символами и имеющие точку в качестве десятичного
+	 *         разделителя.
+	 * @throws NullPointerException если {@code str} является {@code null}.
+	 */
+	static boolean representsNumbers(String str) {
+<span class="fc" id="L162">		Objects.requireNonNull(str);</span>
+<span class="fc" id="L163">		final String decimalRegex = &quot;([+-]?(\\d*\\.?\\d+|\\d+\\.\\d*))&quot;;</span>
+<span class="fc" id="L164">		final Pattern pattern = Pattern.compile(</span>
+				&quot;^\\s*&quot; + decimalRegex + &quot;(\\s+&quot; + decimalRegex + &quot;\\s*)*&quot; + &quot;$&quot;);
+<span class="fc" id="L166">		Matcher matcher = pattern.matcher(str);</span>
+<span class="fc" id="L167">		return matcher.matches();</span>
+	}
+
+	static List&lt;Number&gt; parseNumbersList(String str) {
+<span class="fc" id="L171">		return Stream.of(str.strip().split(&quot;\\s+&quot;))</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">				.filter(s -&gt; !s.isEmpty())</span>
+				//.peek(s -&gt; out.println(&quot;\&quot;&quot; + s + &quot;\&quot;&quot;))
+<span class="fc" id="L174">				.map(ConsoleLifecycle::parseNumber)</span>
+<span class="fc" id="L175">				.toList();</span>
+	}
+
+	static Number parseNumber(String str) {
+		try {
+<span class="fc" id="L180">			return NumberFormat.getInstance(NUMBERS_LOCALE).parse(str.strip());</span>
+<span class="fc" id="L181">		} catch (ParseException e) {</span>
+<span class="fc" id="L182">			throw new RuntimeException(e);</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

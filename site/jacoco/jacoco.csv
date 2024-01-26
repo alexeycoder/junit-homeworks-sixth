@@ -1,0 +1,6 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+junit-homeworks-sixth,edu.alexey.junit.homeworks.sixth.aux,UncloseableInputStream,0,10,0,0,0,4,0,3,0,3
+junit-homeworks-sixth,edu.alexey.junit.homeworks.sixth,ListByAverageComparator,0,64,0,10,0,16,0,7,0,2
+junit-homeworks-sixth,edu.alexey.junit.homeworks.sixth,ConsoleLifecycle,0,264,0,38,0,77,0,31,0,12
+junit-homeworks-sixth,edu.alexey.junit.homeworks.sixth,ListUtils,0,11,0,0,0,4,0,1,0,1
+junit-homeworks-sixth,edu.alexey.junit.homeworks.sixth,App,0,5,0,0,0,2,0,1,0,1
