@@ -56,7 +56,7 @@ b. Сравнивает эти средние значения и выводит
 
 ### Отчёт о покрытии JaCoCo
 
-См. также в [site/jacoco/index.html](https://htmlpreview.github.io/?https://github.com/alexeycoder/junit-homeworks-sixth/blob/site/jacoco/index.html)
+См. также в [site/jacoco/index.html](https://htmlpreview.github.io/?https://github.com/alexeycoder/junit-homeworks-sixth/blob/main/site/jacoco/index.html)
 
 ![Отчёт JaCoCo 1](https://raw.githubusercontent.com/alexeycoder/illustrations/main/java-junit-hw6/jacoco-1.png)
 
@@ -78,7 +78,7 @@ b. Сравнивает эти средние значения и выводит
 
 ### Отчёт CheckStyle
 
-См. также в [site/checkstyle/checkstyle.html](https://htmlpreview.github.io/?https://github.com/alexeycoder/junit-homeworks-sixth/blob/site/checkstyle/checkstyle.html)
+См. также в [site/checkstyle/checkstyle.html](https://htmlpreview.github.io/?https://github.com/alexeycoder/junit-homeworks-sixth/blob/main/site/checkstyle/checkstyle.html)
 
 В качестве опорных использовались соглашения из Google Java Style с модификациями: табуляция для формирования отступов и порядок импортов, применяемый в Eclipse IDE.
 
